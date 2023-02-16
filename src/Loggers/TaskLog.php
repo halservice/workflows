@@ -10,7 +10,9 @@ class TaskLog extends Model
     protected $table = 'task_logs';
 
     public static $STATUS_START = 'start';
+
     public static $STATUS_FINISHED = 'finished';
+
     public static $STATUS_ERROR = 'error';
 
     protected $fillable = [

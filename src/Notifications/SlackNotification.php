@@ -11,6 +11,7 @@ class SlackNotification extends Notification
     use Queueable;
 
     private $message;
+
     private $to;
 
     /**

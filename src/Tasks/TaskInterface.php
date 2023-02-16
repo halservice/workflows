@@ -3,6 +3,7 @@
 namespace the42coders\Workflows\Tasks;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use the42coders\Workflows\DataBuses\DataBus;
 
 interface TaskInterface
@@ -18,10 +19,6 @@ interface TaskInterface
 
     /**
      * Checks if all Conditions pass for this Action.
-     *
-     * @param  Model  $model
-     * @param  DataBus  $data
-     * @return bool
      */
     public function checkConditions(Model $model, DataBus $data): bool;
 }

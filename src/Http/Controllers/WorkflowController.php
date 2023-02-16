@@ -60,7 +60,6 @@ class WorkflowController extends Controller
     /**
      * Deletes the Workflow and over cascading also the Tasks, TaskLogs, WorkflowLogs and Triggers.
      *
-     * @param $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function delete($id)
@@ -75,7 +74,7 @@ class WorkflowController extends Controller
     public function addTask($id, Request $request)
     {
         $workflow = Workflow::find($id);
-        if ($request->data['type'] == 'trigger') {
+        if ($request->data['type'] === 'trigger') {
             return [
                 'task' => '',
             ];
@@ -133,11 +132,11 @@ class WorkflowController extends Controller
     {
         $workflow = Workflow::find($id);
 
-        if ($request->type == 'task') {
+        if ($request->type === 'task') {
             $element = $workflow->tasks->find($request->id);
         }
 
-        if ($request->type == 'trigger') {
+        if ($request->type === 'trigger') {
             $element = $workflow->triggers->find($request->id);
         }
 
@@ -151,11 +150,11 @@ class WorkflowController extends Controller
     {
         $workflow = Workflow::find($id);
 
-        if ($request->type == 'task') {
+        if ($request->type === 'task') {
             $element = $workflow->tasks->find($request->id);
         }
 
-        if ($request->type == 'trigger') {
+        if ($request->type === 'trigger') {
             $element = $workflow->triggers->find($request->id);
         }
 
@@ -184,11 +183,11 @@ class WorkflowController extends Controller
 
     public function getElementByNode($workflow_id, $node)
     {
-        if ($node['data']['type'] == 'task') {
+        if ($node['data']['type'] === 'task') {
             $element = Task::where('workflow_id', $workflow_id)->where('id', $node['data']['task_id'])->first();
         }
 
-        if ($node['data']['type'] == 'trigger') {
+        if ($node['data']['type'] === 'trigger') {
             $element = Trigger::where('workflow_id', $workflow_id)->where('id', $node['data']['trigger_id'])->first();
         }
 
@@ -199,16 +198,16 @@ class WorkflowController extends Controller
     {
         $workflow = Workflow::find($id);
 
-        if ($request->parent_element['data']['type'] == 'trigger') {
+        if ($request->parent_element['data']['type'] === 'trigger') {
             $parentElement = Trigger::where('workflow_id', $workflow->id)->where('id', $request->parent_element['data']['trigger_id'])->first();
         }
-        if ($request->parent_element['data']['type'] == 'task') {
+        if ($request->parent_element['data']['type'] === 'task') {
             $parentElement = Task::where('workflow_id', $workflow->id)->where('id', $request->parent_element['data']['task_id'])->first();
         }
-        if ($request->child_element['data']['type'] == 'trigger') {
+        if ($request->child_element['data']['type'] === 'trigger') {
             $childElement = Trigger::where('workflow_id', $workflow->id)->where('id', $request->child_element['data']['trigger_id'])->first();
         }
-        if ($request->child_element['data']['type'] == 'task') {
+        if ($request->child_element['data']['type'] === 'task') {
             $childElement = Task::where('workflow_id', $workflow->id)->where('id', $request->child_element['data']['task_id'])->first();
         }
 
@@ -250,10 +249,10 @@ class WorkflowController extends Controller
     {
         $workflow = Workflow::find($id);
 
-        if ($request->type == 'task') {
+        if ($request->type === 'task') {
             $element = Task::where('workflow_id', $workflow->id)->where('id', $request->element_id)->first();
         }
-        if ($request->type == 'trigger') {
+        if ($request->type === 'trigger') {
             $element = Trigger::where('workflow_id', $workflow->id)->where('id', $request->element_id)->first();
         }
 
@@ -266,10 +265,10 @@ class WorkflowController extends Controller
     {
         $workflow = Workflow::find($id);
 
-        if ($request->type == 'task') {
+        if ($request->type === 'task') {
             $element = Task::where('workflow_id', $workflow->id)->where('id', $request->element_id)->first();
         }
-        if ($request->type == 'trigger') {
+        if ($request->type === 'trigger') {
             $element = Trigger::where('workflow_id', $workflow->id)->where('id', $request->element_id)->first();
         }
 
@@ -289,18 +288,19 @@ class WorkflowController extends Controller
     public function loadResourceIntelligence($id, Request $request)
     {
         $workflow = Workflow::find($id);
+        $html = '';
 
-        if ($request->type == 'task') {
+        if ($request->type === 'task') {
             $element = Task::where('workflow_id', $workflow->id)->where('id', $request->element_id)->first();
         }
-        if ($request->type == 'trigger') {
+        if ($request->type === 'trigger') {
             $element = Trigger::where('workflow_id', $workflow->id)->where('id', $request->element_id)->first();
         }
 
         if (in_array($request->resource, config('workflows.data_resources'))) {
             $className = $request->resource ?? 'the42coders\\Workflows\\DataBuses\\ValueResource';
             $resource = new $className();
-            $html = $resource->loadResourceIntelligence($element, $request->value, $request->field_name);
+            $html = $resource::loadResourceIntelligence($element, $request->value, $request->field_name);
         }
 
         return response()->json([

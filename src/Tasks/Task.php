@@ -22,7 +22,9 @@ class Task extends Model implements TaskInterface
     public static $icon = '<i class="fas fa-question"></i>';
 
     public $dataBus = null;
+
     public $model = null;
+
     public $workflowLog = null;
 
     protected $fillable = [
@@ -45,6 +47,7 @@ class Task extends Model implements TaskInterface
     ];
 
     public static $fields = [];
+
     public static $output = [];
 
     public function __construct(array $attributes = [])
@@ -101,9 +104,6 @@ class Task extends Model implements TaskInterface
 
     /**
      * Check if all Conditions for this Action pass.
-     *
-     * @param  Model  $model
-     * @return bool
      */
     public function checkConditions(Model $model, DataBus $data): bool
     {
@@ -149,7 +149,7 @@ class Task extends Model implements TaskInterface
     }
 
     /**
-     * Execute the Action return Value tells you about the success.
+     * Execute the Task return Value tells you about the success.
      *
      * @return bool
      */

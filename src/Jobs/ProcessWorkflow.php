@@ -18,8 +18,11 @@ class ProcessWorkflow implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $model;
+
     protected $dataBus;
+
     protected $trigger;
+
     protected $log;
 
     /**

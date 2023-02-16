@@ -32,7 +32,9 @@ class Trigger extends Model
     ];
 
     public static $output = [];
+
     public static $fields = [];
+
     public static $fields_definitions = [];
 
     protected $casts = [
@@ -59,7 +61,7 @@ class Trigger extends Model
      *
      * @param  array  $attributes
      * @param  null  $connection
-     * @return \App\Models\Action
+     * @return static
      */
     public function newFromBuilder($attributes = [], $connection = null)
     {
