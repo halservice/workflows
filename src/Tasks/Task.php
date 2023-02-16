@@ -4,9 +4,9 @@ namespace the42coders\Workflows\Tasks;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use the42coders\Workflows\DataBuses\DataBus;
 use the42coders\Workflows\DataBuses\DataBussable;
+use the42coders\Workflows\Exceptions\ConditionFailedError;
 use the42coders\Workflows\Fields\Fieldable;
 use the42coders\Workflows\Loggers\TaskLog;
 use the42coders\Workflows\Loggers\WorkflowLog;
@@ -78,7 +78,7 @@ class Task extends Model implements TaskInterface
      *
      * @param  array  $attributes
      * @param  null  $connection
-     * @return \App\Models\Action
+     * @return static
      */
     public function newFromBuilder($attributes = [], $connection = null)
     {
@@ -120,7 +120,7 @@ class Task extends Model implements TaskInterface
             $DataBus = $ruleDetails[0];
             $field = $ruleDetails[1];
 
-            $result = config('workflows.data_resources')[$DataBus]::checkCondition($this, $data, $field, $rule->operator, $rule->value);
+            $result = config('workflows.data_resources')[$DataBus]::checkCondition($model, $data, $field, $rule->operator, $rule->value);
 
             if (! $result) {
                 throw new \Exception('The Condition for Task '.$this->name.' with the field '.$rule->field.' '.$rule->operator.' '.$rule->value.' failed.');
@@ -174,6 +174,8 @@ class Task extends Model implements TaskInterface
             }
             $child->pastExecute();
         }
+
+        return true;
     }
 
     public function getSettings()
