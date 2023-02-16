@@ -265,7 +265,7 @@ class WorkflowControllerTest extends TestCase
 
         $taskNewLoaded = Task::where('id', $task->id)->first();
 
-        $this->assertSame($taskNewLoaded->pos_x, '11');
+        $this->assertSame($taskNewLoaded->pos_x, 11);
     }
 
     /** @test */
@@ -326,7 +326,7 @@ class WorkflowControllerTest extends TestCase
 
         $orphanTask = Task::where('id', $task2->id)->first();
 
-        $this->assertSame($orphanTask->parentable_id, '0');
+        $this->assertSame($orphanTask->parentable_id, 0);
     }
 
     /** @test */
