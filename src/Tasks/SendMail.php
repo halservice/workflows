@@ -2,9 +2,11 @@
 
 namespace the42coders\Workflows\Tasks;
 
+use Illuminate\Support\Facades\Mail;
+
 class SendMail extends Task
 {
-    public static $fields = [
+    public static array $fields = [
         'Subject' => 'subject',
         'Recipients' => 'recipients',
         'Sender' => 'sender',
@@ -12,13 +14,16 @@ class SendMail extends Task
         'Files' => 'files',
     ];
 
-    public static $icon = '<i class="far fa-envelope"></i>';
+    public static string $icon = '<i class="far fa-envelope"></i>';
 
+    /**
+     * @return void
+     */
     public function execute(): void
     {
         $dataBus = $this->dataBus;
 
-        \Mail::html($dataBus->get('content'), function ($message) use ($dataBus) {
+        Mail::html($dataBus->get('content'), function ($message) use ($dataBus) {
             $message->subject($dataBus->get('subject'))
                 ->to($dataBus->get('recipients'))
                 ->from($dataBus->get('sender'));

@@ -7,16 +7,19 @@ use the42coders\Workflows\Fields\TrixInputField;
 
 class HtmlInput extends Task
 {
-    public static $fields = [
+    public static array $fields = [
         'Html' => 'html',
     ];
 
-    public static $output = [
+    public static array $output = [
         'HtmlOutput' => 'html_output',
     ];
 
-    public static $icon = '<i class="fas fa-code"></i>';
+    public static string $icon = '<i class="fas fa-code"></i>';
 
+    /**
+     * @return array
+     */
     public function inputFields(): array
     {
         return [
@@ -24,6 +27,9 @@ class HtmlInput extends Task
         ];
     }
 
+    /**
+     * @return void
+     */
     public function execute(): void
     {
         $html = str_replace('&gt;', '>', $this->getData('html'));
@@ -37,6 +43,11 @@ class HtmlInput extends Task
         $this->setData('html_output', $html);
     }
 
+    /**
+     * @param $__php
+     * @param $__data
+     * @return false|string
+     */
     public function render($__php, $__data)
     {
         $obLevel = ob_get_level();
@@ -44,16 +55,11 @@ class HtmlInput extends Task
         extract($__data, EXTR_SKIP);
         try {
             eval('?'.'>'.$__php);
-        } catch (Exception $e) {
+        } catch (\Exception|\Throwable $e) {
             while (ob_get_level() > $obLevel) {
                 ob_end_clean();
             }
             throw $e;
-        } catch (Throwable $e) {
-            while (ob_get_level() > $obLevel) {
-                ob_end_clean();
-            }
-            throw new FatalThrowableError($e);
         }
 
         return ob_get_clean();

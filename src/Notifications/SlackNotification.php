@@ -10,16 +10,16 @@ class SlackNotification extends Notification
 {
     use Queueable;
 
-    private $message;
+    private string $message;
 
-    private $to;
+    private string $to;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($to, $message)
+    public function __construct(string $to, string $message)
     {
         $this->message = $message;
         $this->to = $to;

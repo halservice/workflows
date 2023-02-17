@@ -6,11 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataBusResource implements Resource
 {
-    public function getData(string $name, string $value, Model $model, DataBus $dataBus)
+    /**
+     * @param string $name
+     * @param string $value
+     * @param Model $model
+     * @param DataBus $dataBus
+     * @return mixed
+     */
+    public function getData(string $name, string $value, Model $model, DataBus $dataBus): mixed
     {
         return $dataBus->data[$dataBus->data[$value]];
     }
 
+    /**
+     * @param Model $element
+     * @param DataBus $dataBus
+     * @param string $field
+     * @param string $operator
+     * @param string $value
+     * @return bool
+     */
     public static function checkCondition(Model $element, DataBus $dataBus, string $field, string $operator, string $value)
     {
         switch ($operator) {
@@ -23,19 +38,31 @@ class DataBusResource implements Resource
         }
     }
 
-    public static function getValues(Model $element, $value, $field)
+    /**
+     * @param Model $element
+     * @param string|null $value
+     * @param string|null $fieldName
+     * @return mixed
+     */
+    public static function getValues(Model $element, ?string $value, ?string $fieldName)
     {
         return $element->getParentDataBusKeys();
     }
 
-    public static function loadResourceIntelligence(Model $element, $value, $field)
+    /**
+     * @param Model $element
+     * @param string|null $value
+     * @param string $fieldName
+     * @return string
+     */
+    public static function loadResourceIntelligence(Model $element, ?string $value, string $fieldName): string
     {
-        $fields = self::getValues($element, $value, $field);
+        $fields = self::getValues($element, $value, $fieldName);
 
         return view('workflows::fields.data_bus_resource_field', [
             'fields' => $fields,
             'value' => $value,
-            'field' => $field,
+            'field' => $fieldName,
         ])->render();
     }
 }

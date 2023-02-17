@@ -6,25 +6,44 @@ use Illuminate\Database\Eloquent\Model;
 
 class ConfigResource implements Resource
 {
+    /**
+     * @param string $name
+     * @param string $value
+     * @param Model $model
+     * @param DataBus $dataBus
+     * @return \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     */
     public function getData(string $name, string $value, Model $model, DataBus $dataBus)
     {
         return config($value);
     }
 
-    public static function getValues(Model $element, $value, $field)
+    /**
+     * @param Model $element
+     * @param string|null $value
+     * @param string|null $fieldName
+     * @return array
+     */
+    public static function getValues(Model $element, ?string $value, ?string $fieldName): array
     {
         return [];
     }
 
-    public static function loadResourceIntelligence(Model $element, $value, $field)
+    /**
+     * @param Model $element
+     * @param string|null $value
+     * @param string $fieldName
+     * @return string
+     */
+    public static function loadResourceIntelligence(Model $element, ?string $value, string $fieldName): string
     {
-        if ($element->inputField($field)) {
-            return $element->inputField($field)->render($field, $value);
+        if ($element->inputField($fieldName)) {
+            return $element->inputField($fieldName)->render($fieldName, $value);
         }
 
         return view('workflows::fields.text_field', [
             'value' => $value,
-            'field' => $field,
+            'field' => $fieldName,
         ])->render();
     }
 }

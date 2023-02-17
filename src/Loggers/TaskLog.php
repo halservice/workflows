@@ -3,7 +3,6 @@
 namespace the42coders\Workflows\Loggers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 class TaskLog extends Model
 {
@@ -25,37 +24,57 @@ class TaskLog extends Model
         'end',
     ];
 
+    /**
+     * @param array $attributes
+     */
     public function __construct(array $attributes = [])
     {
         $this->table = config('workflows.db_prefix').$this->table;
         parent::__construct($attributes);
     }
 
-    public static function createHelper(int $workflow_log_id, int $task_id, string $task_name, string $status = null, string $message = '', $start = null, $end = null): TaskLog
+    /**
+     * @param int $workflowLogId
+     * @param int $taskId
+     * @param string $taskName
+     * @param string|null $status
+     * @param string $message
+     * @param $start
+     * @param $end
+     * @return TaskLog
+     */
+    public static function createHelper(int $workflowLogId, int $taskId, string $taskName, string $status = null, string $message = '', $start = null, $end = null): TaskLog
     {
         return TaskLog::create([
             'status' => $status ?? self::$STATUS_START,
-            'workflow_log_id' => $workflow_log_id,
-            'task_id' => $task_id,
-            'name' => $task_name,
+            'workflow_log_id' => $workflowLogId,
+            'task_id' => $taskId,
+            'name' => $taskName,
             'message' => $message,
-            'start' => $start ?? Carbon::now(),
+            'start' => $start ?? now(),
             'end' => $end,
         ]);
     }
 
+    /**
+     * @param string $errorMessage
+     * @return void
+     */
     public function setError(string $errorMessage)
     {
         $this->message = $errorMessage;
         $this->status = self::$STATUS_ERROR;
-        $this->end = Carbon::now();
+        $this->end = now();
         $this->save();
     }
 
+    /**
+     * @return void
+     */
     public function finish()
     {
         $this->status = self::$STATUS_FINISHED;
-        $this->end = Carbon::now();
+        $this->end = now();
         $this->save();
     }
 }

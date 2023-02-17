@@ -6,37 +6,61 @@ use Illuminate\Database\Eloquent\Model;
 
 class ValueResource implements Resource
 {
-    public function getData(string $name, string $value, Model $model, DataBus $dataBus)
+    /**
+     * @param string $name
+     * @param string $value
+     * @param Model $model
+     * @param DataBus $dataBus
+     * @return string
+     */
+    public function getData(string $name, string $value, Model $model, DataBus $dataBus): string
     {
         return $value;
     }
 
-    public static function getValues(Model $element, $value, $field)
+    /**
+     * @param Model $element
+     * @param string|null $value
+     * @param string|null $fieldName
+     * @return array
+     */
+    public static function getValues(Model $element, ?string $value, ?string $fieldName): array
     {
         return [];
     }
 
-    public static function checkCondition(Model $element, DataBus $dataBus, string $field, string $operator, string $value)
+    /**
+     * @param Model $element
+     * @param DataBus $dataBus
+     * @param string $field
+     * @param string $operator
+     * @param string $value
+     * @return bool
+     */
+    public static function checkCondition(Model $element, DataBus $dataBus, string $field, string $operator, string $value): bool
     {
-        switch ($operator) {
-            case 'equal':
-                return $dataBus->get($field) == $value;
-            case 'not_equal':
-                return $dataBus->get($field) != $value;
-            default:
-                return true;
-        }
+        return match ($operator) {
+            'equal' => $dataBus->get($field) == $value,
+            'not_equal' => $dataBus->get($field) != $value,
+            default => true,
+        };
     }
 
-    public static function loadResourceIntelligence(Model $element, $value, $field)
+    /**
+     * @param Model $element
+     * @param string|null $value
+     * @param string $fieldName
+     * @return string
+     */
+    public static function loadResourceIntelligence(Model $element, ?string $value, string $fieldName): string
     {
-        if ($element->inputField($field)) {
-            return $element->inputField($field)->render($element, $value, $field);
+        if ($element->inputField($fieldName)) {
+            return $element->inputField($fieldName)->render($element, $value, $fieldName);
         }
 
         return view('workflows::fields.text_field', [
             'value' => $value,
-            'field' => $field,
+            'field' => $fieldName,
         ])->render();
     }
 }

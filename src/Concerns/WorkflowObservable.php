@@ -1,38 +1,42 @@
 <?php
 
-namespace the42coders\Workflows\Triggers;
+namespace the42coders\Workflows\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
+use the42coders\Workflows\Triggers\Trigger;
 
 trait WorkflowObservable
 {
-    public static function bootWorkflowObservable()
+    /**
+     * @return void
+     */
+    public static function bootWorkflowObservable(): void
     {
-        static::retrieved(function (Model $model) {
+        static::retrieved(static function (Model $model) {
             self::startWorkflows($model, 'retrieved');
         });
-        static::creating(function (Model $model) {
+        static::creating(static function (Model $model) {
             self::startWorkflows($model, 'creating');
         });
-        static::created(function (Model $model) {
+        static::created(static function (Model $model) {
             self::startWorkflows($model, 'created');
         });
-        static::updating(function (Model $model) {
+        static::updating(static function (Model $model) {
             self::startWorkflows($model, 'updating');
         });
-        static::updated(function (Model $model) {
+        static::updated(static function (Model $model) {
             self::startWorkflows($model, 'updated');
         });
-        static::saving(function (Model $model) {
+        static::saving(static function (Model $model) {
             self::startWorkflows($model, 'saving');
         });
-        static::saved(function (Model $model) {
+        static::saved(static function (Model $model) {
             self::startWorkflows($model, 'saved');
         });
-        static::deleting(function (Model $model) {
+        static::deleting(static function (Model $model) {
             self::startWorkflows($model, 'deleting');
         });
-        static::deleted(function (Model $model) {
+        static::deleted(static function (Model $model) {
             self::startWorkflows($model, 'deleted');
         });
         //TODO: check why they are not available here
@@ -47,11 +51,16 @@ trait WorkflowObservable
         });*/
     }
 
+    /**
+     * @param string $class
+     * @param string $event
+     * @return mixed
+     */
     public static function getRegisteredTriggers(string $class, string $event)
     {
-        $class_array = explode('\\', $class);
+        $classArray = explode('\\', $class);
 
-        $className = $class_array[count($class_array) - 1];
+        $className = $classArray[count($classArray) - 1];
 
         return Trigger::where('type', 'the42coders\Workflows\Triggers\ObserverTrigger')
             ->where('data_fields->class->value', 'like', '%'.$className.'%')
@@ -59,6 +68,11 @@ trait WorkflowObservable
             ->get();
     }
 
+    /**
+     * @param Model $model
+     * @param string $event
+     * @return false|void
+     */
     public static function startWorkflows(Model $model, string $event)
     {
         if (! in_array($event, config('workflows.triggers.Observers.events'))) {

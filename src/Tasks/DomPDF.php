@@ -6,15 +6,15 @@ use Barryvdh\DomPDF\Facade as PDF;
 
 class DomPDF extends Task
 {
-    public static $fields = [
+    public static array $fields = [
         'Html' => 'html',
     ];
 
-    public static $output = [
+    public static array $output = [
         'PDFFile' => 'pdf_file',
     ];
 
-    public static $icon = '<i class="fa fa-file-pdf"></i>';
+    public static string $icon = '<i class="fa fa-file-pdf"></i>';
 
     public function execute(): void
     {

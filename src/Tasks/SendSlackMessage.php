@@ -7,17 +7,21 @@ use the42coders\Workflows\Notifications\SlackNotification;
 
 class SendSlackMessage extends Task
 {
-    public static $fields = [
+    public static array $fields = [
         'Channel/User' => 'channel',
         'Message' => 'message',
     ];
 
-    public static $output = [
+    public static array $output = [
         'Output' => 'output',
     ];
 
-    public static $icon = '<i class="fab fa-slack"></i>';
+    public static string $icon = '<i class="fab fa-slack"></i>';
 
+
+    /**
+     * @return void
+     */
     public function execute(): void
     {
         $channel = $this->getData('channel');

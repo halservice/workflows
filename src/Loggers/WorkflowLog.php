@@ -2,10 +2,15 @@
 
 namespace the42coders\Workflows\Loggers;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use the42coders\Workflows\DataBuses\DataBus;
-use the42coders\Workflows\Triggers\WorkflowObservable;
+use the42coders\Workflows\Triggers\Trigger;
+use the42coders\Workflows\Concerns\WorkflowObservable;
 
 class WorkflowLog extends Model
 {
@@ -38,33 +43,54 @@ class WorkflowLog extends Model
         'triggerable_type',
     ];
 
+    /**
+     * @param array $attributes
+     */
     public function __construct(array $attributes = [])
     {
         $this->table = config('workflows.db_prefix').$this->table;
         parent::__construct($attributes);
     }
 
-    public function workflow()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function workflow(): BelongsTo
     {
         return $this->belongsTo('the42coders\Workflows\Workflow');
     }
 
-    public function taskLogs()
+    /**
+     * @return HasMany
+     */
+    public function taskLogs(): HasMany
     {
         return $this->hasMany('the42coders\Workflows\Loggers\TaskLog');
     }
 
-    public function elementable()
+    /**
+     * @return MorphTo
+     */
+    public function elementable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function triggerable()
+    /**
+     * @return MorphTo
+     */
+    public function triggerable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public static function createHelper(Model $workflow, Model $element, $trigger): WorkflowLog
+    /**
+     * @param Model $workflow
+     * @param Model $element
+     * @param Trigger $trigger
+     * @return WorkflowLog
+     */
+    public static function createHelper(Model $workflow, Model $element, Trigger $trigger): WorkflowLog
     {
         return WorkflowLog::create([
             'workflow_id' => $workflow->id,
@@ -75,10 +101,15 @@ class WorkflowLog extends Model
             'triggerable_type' => get_class($trigger),
             'status' => self::$STATUS_START,
             'message' => '',
-            'start' => Carbon::now(),
+            'start' => now(),
         ]);
     }
 
+    /**
+     * @param string $errorMessage
+     * @param DataBus $dataBus
+     * @return void
+     */
     public function setError(string $errorMessage, DataBus $dataBus)
     {
         $this->message = $errorMessage;
@@ -88,19 +119,32 @@ class WorkflowLog extends Model
         $this->save();
     }
 
+    /**
+     * @return void
+     */
     public function finish()
     {
         $this->status = self::$STATUS_FINISHED;
-        $this->end = Carbon::now();
+        $this->end = now();
         $this->save();
     }
 
-    public function addTaskLog(int $workflow_log_id, int $task_id, string $task_name, string $status, string $message, $start, $end = null)
+    /**
+     * @param int $workflowLogId
+     * @param int $taskId
+     * @param string $taskName
+     * @param string $status
+     * @param string $message
+     * @param DateTime $start
+     * @param DateTime|null $end
+     * @return void
+     */
+    public function addTaskLog(int $workflowLogId, int $taskId, string $taskName, string $status, string $message, DateTime $start, DateTime $end = null)
     {
-        $this->taskLogsArray[$task_id] = [
-            'workflow_log_id' => $workflow_log_id,
-            'task_id' => $task_id,
-            'task_name' => $task_name,
+        $this->taskLogsArray[$taskId] = [
+            'workflow_log_id' => $workflowLogId,
+            'task_id' => $taskId,
+            'task_name' => $taskName,
             'status' => $status,
             'message' => $message,
             'start' => $start,
@@ -108,13 +152,23 @@ class WorkflowLog extends Model
         ];
     }
 
-    public function updateTaskLog(int $task_id, string $message, string $status, \DateTime $end)
+    /**
+     * @param int $task_id
+     * @param string $message
+     * @param string $status
+     * @param DateTime $end
+     * @return void
+     */
+    public function updateTaskLog(int $task_id, string $message, string $status, DateTime $end)
     {
         $this->taskLogsArray[$task_id]['message'] = $message;
         $this->taskLogsArray[$task_id]['status'] = $status;
         $this->taskLogsArray[$task_id]['end'] = $end;
     }
 
+    /**
+     * @return void
+     */
     public function createTaskLogsFromMemory()
     {
         foreach ($this->taskLogsArray as $taskLog) {

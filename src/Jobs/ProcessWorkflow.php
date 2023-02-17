@@ -17,13 +17,13 @@ class ProcessWorkflow implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $model;
+    protected Model $model;
 
-    protected $dataBus;
+    protected DataBus $dataBus;
 
-    protected $trigger;
+    protected Trigger $trigger;
 
-    protected $log;
+    protected WorkflowLog $log;
 
     /**
      * Create a new job instance.

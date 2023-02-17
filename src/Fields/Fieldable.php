@@ -11,6 +11,8 @@ trait Fieldable
 {
     /**
      * Return the Field value. If Field is not existing it returns the Field name.
+     * @param string $field
+     * @return string
      */
     public function getFieldValue(string $field): string
     {
@@ -27,6 +29,9 @@ trait Fieldable
 
     /**
      * Returns the Field Type. If Field is not existing it returns an empty String.
+     *
+     * @param string $field
+     * @return string
      */
     public function getFieldType(string $field): string
     {
@@ -35,6 +40,10 @@ trait Fieldable
 
     /**
      * Check if the Field is from the passed resourceType.
+     *
+     * @param string $field
+     * @param string $resourceType
+     * @return bool
      */
     public function fieldIsResourceType(string $field, string $resourceType): bool
     {
@@ -43,6 +52,10 @@ trait Fieldable
 
     /**
      * Pass selected back if the resourceType is selected for this field. If not an empty String.
+     *
+     * @param string $field
+     * @param string $resourceType
+     * @return string
      */
     public function fieldIsSelected(string $field, string $resourceType): string
     {
@@ -52,6 +65,9 @@ trait Fieldable
     /**
      * Loads Resource Intelligence from the corresponding DataResourceClass.
      * If non is set its taking the first defined one from Config.
+     *
+     * @param string $field
+     * @return string
      */
     public function loadResourceIntelligence(string $field): string
     {
@@ -66,12 +82,19 @@ trait Fieldable
         return $class::loadResourceIntelligence($this, $this->getFieldValue($field), $field);
     }
 
+    /**
+     * @return array
+     */
     public function inputFields(): array
     {
         return [];
     }
 
-    public function inputField($key)
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    public function inputField(string $key): mixed
     {
         return $this->inputFields()[$key] ?? null;
     }

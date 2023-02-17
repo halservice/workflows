@@ -3,10 +3,11 @@
 namespace the42coders\Workflows;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Workflow extends Model
 {
-    private $data;
+    private array $data;
 
     protected $table = 'workflows';
 
@@ -14,28 +15,44 @@ class Workflow extends Model
         'name',
     ];
 
+    /**
+     * @param array $attributes
+     */
     public function __construct(array $attributes = [])
     {
         $this->table = config('workflows.db_prefix').$this->table;
         parent::__construct($attributes);
     }
 
-    public function tasks()
+    /**
+     * @return HasMany
+     */
+    public function tasks(): HasMany
     {
         return $this->hasMany('the42coders\Workflows\Tasks\Task');
     }
 
-    public function triggers()
+    /**
+     * @return HasMany
+     */
+    public function triggers(): HasMany
     {
         return $this->hasMany('the42coders\Workflows\Triggers\Trigger');
     }
 
-    public function logs()
+    /**
+     * @return HasMany
+     */
+    public function logs(): HasMany
     {
         return $this->hasMany('the42coders\Workflows\Loggers\WorkflowLog');
     }
 
-    public function getTriggerByClass($class)
+    /**
+     * @param string $class
+     * @return Model|HasMany|object|null
+     */
+    public function getTriggerByClass(string $class)
     {
         return $this->triggers()->where('type', $class)->first();
     }

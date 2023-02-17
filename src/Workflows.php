@@ -6,7 +6,10 @@ use Illuminate\Support\Facades\Route;
 
 class Workflows
 {
-    public static function routes()
+    /**
+     * @return void
+     */
+    public static function routes(): void
     {
         Route::group(['prefix' => empty(config('workflows.prefix')) ? 'workflows' : config('workflows.prefix'), 'namespace' => __NAMESPACE__.'\Http\Controllers'], function () {
             Route::get('/', 'WorkflowController@index')->name('workflow.index');

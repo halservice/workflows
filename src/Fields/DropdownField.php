@@ -2,21 +2,36 @@
 
 namespace the42coders\Workflows\Fields;
 
+use Illuminate\Database\Eloquent\Model;
+
 class DropdownField implements FieldInterface
 {
-    public $options;
+    public array $options;
 
+    /**
+     * @param array $options
+     */
     public function __construct(array $options)
     {
         $this->options = $options;
     }
 
-    public static function make(array $options)
+    /**
+     * @param array $options
+     * @return DropdownField
+     */
+    public static function make(array $options): self
     {
         return new self($options);
     }
 
-    public function render($element, $value, $field)
+    /**
+     * @param Model $element
+     * @param string $value
+     * @param string $field
+     * @return string
+     */
+    public function render(Model $element, string $value, string $field): string
     {
         return view('workflows::fields.dropdown_field', [
             'field' => $field,

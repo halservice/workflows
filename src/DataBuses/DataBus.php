@@ -13,7 +13,12 @@ class DataBus
         $this->data = $data;
     }
 
-    public function collectData(Model $model, $fields): void
+    /**
+     * @param Model $model
+     * @param array $fields
+     * @return void
+     */
+    public function collectData(Model $model, array $fields): void
     {
         foreach ($fields as $name => $field) {
             //TODO: Quick fix to remove description but handle/filter this better in the future :(
@@ -35,7 +40,10 @@ class DataBus
         }
     }
 
-    public function toString()
+    /**
+     * @return string
+     */
+    public function toString(): string
     {
         $output = '';
 
@@ -46,16 +54,31 @@ class DataBus
         return $output;
     }
 
-    public function get(string $key, string $default = null)
+    /**
+     * @param string $key
+     * @param string|null $default
+     * @return mixed|null
+     */
+    public function get(string $key, string $default = null): mixed
     {
         return $this->data[$key] ?? $default;
     }
 
-    public function setOutput(string $key, $value)
+    /**
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
+    public function setOutput(string $key, string $value)
     {
         $this->data[$this->get($key, $key)] = $value;
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
     public function setOutputArray(string $key, string $value)
     {
         $this->data[$this->get($key, $key)][] = $value;

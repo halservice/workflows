@@ -2,14 +2,23 @@
 
 namespace the42coders\Workflows\DataBuses;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 trait DataBussable
 {
-    public function workflow()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function workflow(): BelongsTo
     {
         return $this->belongsTo('the42coders\Workflows\Workflow');
     }
 
-    public function getParentDataBusKeys($passedFields = [])
+    /**
+     * @param array $passedFields
+     * @return array
+     */
+    public function getParentDataBusKeys(array $passedFields = []): array
     {
         $newFields = $passedFields;
 
@@ -27,18 +36,33 @@ trait DataBussable
         return $newFields;
     }
 
-    public function getData(string $value, string $default = '')
+    /**
+     * @param string $value
+     * @param string $default
+     * @return mixed
+     */
+    public function getData(string $value, string $default = ''): mixed
     {
         return $this->dataBus->get($value, $default);
     }
 
-    public function setDataArray(string $key, $value)
+    /**
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
+    public function setDataArray(string $key, string $value): void
     {
-        return $this->dataBus->setOutputArray($key, $value);
+        $this->dataBus->setOutputArray($key, $value);
     }
 
-    public function setData(string $key, $value)
+    /**
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
+    public function setData(string $key, string $value): void
     {
-        return $this->dataBus->setOutput($key, $value);
+        $this->dataBus->setOutput($key, $value);
     }
 }

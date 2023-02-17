@@ -6,26 +6,30 @@ use the42coders\Workflows\Fields\DropdownField;
 
 class LoadModel extends Task
 {
-    public static $fields = [
+    public static array $fields = [
         'Model Class' => 'model_class',
         'Model Id' => 'model_id',
     ];
 
-    public static $output = [
+    public static array $output = [
         'Output' => 'output',
     ];
 
-    public static $icon = '<i class="fas fa-database"></i>';
+    public static string $icon = '<i class="fas fa-database"></i>';
 
+    /**
+     * @return array
+     */
     public function inputFields(): array
     {
-        $fields = [
+        return [
             'model_class' => DropdownField::make(config('workflows.task_settings.LoadModel.classes')),
         ];
-
-        return $fields;
     }
 
+    /**
+     * @return void
+     */
     public function execute(): void
     {
         $modelClass = $this->getData('model_class');

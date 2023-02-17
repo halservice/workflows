@@ -8,9 +8,9 @@ use the42coders\Workflows\Workflow;
 
 class ButtonTrigger extends Trigger
 {
-    public static $icon = '<i class="fas fa-mouse"></i>';
+    public static string $icon = '<i class="fas fa-mouse"></i>';
 
-    public static $fields = [
+    public static array $fields = [
         'Name' => 'name',
         'Category' => 'category',
         'Class' => 'class',
@@ -19,6 +19,9 @@ class ButtonTrigger extends Trigger
         'CSSStyle' => 'css_style',
     ];
 
+    /**
+     * @return array
+     */
     public function inputFields(): array
     {
         $fields = [
@@ -31,6 +34,9 @@ class ButtonTrigger extends Trigger
 
     /**
      * Renders the button_trigger blade template based on the ButtonTrigger values and the Model passed to the Trigger.
+     *
+     * @param Model $model
+     * @return string
      */
     public function renderButton(Model $model): string
     {
@@ -46,10 +52,14 @@ class ButtonTrigger extends Trigger
     /**
      * Renders a TriggerButton based on the Workflow Id. It will only render the first Trigger if two
      * triggers are existing in the Workflow.
+     *
+     * @param int $workflowId
+     * @param Model $model
+     * @return string
      */
-    public static function renderButtonByWorkflowId(int $workflow_id, Model $model): string
+    public static function renderButtonByWorkflowId(int $workflowId, Model $model): string
     {
-        $workflow = Workflow::find($workflow_id);
+        $workflow = Workflow::find($workflowId);
 
         if (empty($workflow)) {
             return '';
@@ -66,6 +76,10 @@ class ButtonTrigger extends Trigger
 
     /**
      * Renders a Trigger Button by its defined Name.
+     *
+     * @param string $name
+     * @param Model $model
+     * @return string
      */
     public static function renderButtonByName(string $name, Model $model): string
     {
@@ -80,6 +94,10 @@ class ButtonTrigger extends Trigger
 
     /**
      * Renders all Trigger Buttons with the same category.
+     *
+     * @param string $categoryName
+     * @param Model $model
+     * @return string
      */
     public static function renderButtonsByCategory(string $categoryName, Model $model): string
     {

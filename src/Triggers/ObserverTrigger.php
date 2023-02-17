@@ -6,13 +6,16 @@ use the42coders\Workflows\Fields\DropdownField;
 
 class ObserverTrigger extends Trigger
 {
-    public static $icon = '<i class="fas fa-binoculars"></i>';
+    public static string $icon = '<i class="fas fa-binoculars"></i>';
 
-    public static $fields = [
+    public static array $fields = [
         'Class' => 'class',
         'Event' => 'event',
     ];
 
+    /**
+     * @return array
+     */
     public function inputFields(): array
     {
         $fields = [

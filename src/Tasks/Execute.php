@@ -4,16 +4,19 @@ namespace the42coders\Workflows\Tasks;
 
 class Execute extends Task
 {
-    public static $fields = [
+    public static array $fields = [
         'Command' => 'command',
     ];
 
-    public static $output = [
+    public static array $output = [
         'Command Output' => 'command_output',
     ];
 
-    public static $icon = '<i class="fas fa-terminal"></i>';
+    public static string $icon = '<i class="fas fa-terminal"></i>';
 
+    /**
+     * @return void
+     */
     public function execute(): void
     {
         chdir(base_path());

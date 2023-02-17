@@ -3,20 +3,24 @@
 namespace the42coders\Workflows\Tasks;
 
 use Illuminate\Support\Facades\Blade;
+use Symfony\Component\ErrorHandler\Error\FatalError;
 use the42coders\Workflows\Fields\TextInputField;
 
 class TextInput extends Task
 {
-    public static $fields = [
+    public static array $fields = [
         'Text' => 'text',
     ];
 
-    public static $output = [
+    public static array $output = [
         'TextOutput' => 'text_output',
     ];
 
-    public static $icon = '<i class="fas fa-font"></i>';
+    public static string $icon = '<i class="fas fa-font"></i>';
 
+    /**
+     * @return array
+     */
     public function inputFields(): array
     {
         return [
@@ -24,6 +28,9 @@ class TextInput extends Task
         ];
     }
 
+    /**
+     * @return void
+     */
     public function execute(): void
     {
         $text = str_replace('&gt;', '>', $this->getData('text'));
@@ -37,6 +44,11 @@ class TextInput extends Task
         $this->setData('text_output', $text);
     }
 
+    /**
+     * @param $__php
+     * @param $__data
+     * @return false|string
+     */
     public function render($__php, $__data)
     {
         $obLevel = ob_get_level();
@@ -44,16 +56,11 @@ class TextInput extends Task
         extract($__data, EXTR_SKIP);
         try {
             eval('?'.'>'.$__php);
-        } catch (Exception $e) {
+        } catch (\Exception|\Throwable $e) {
             while (ob_get_level() > $obLevel) {
                 ob_end_clean();
             }
             throw $e;
-        } catch (Throwable $e) {
-            while (ob_get_level() > $obLevel) {
-                ob_end_clean();
-            }
-            throw new FatalThrowableError($e);
         }
 
         return ob_get_clean();
